@@ -131,7 +131,7 @@
         "license.filename": {
           "type": "string",
           "default": "LICENSE",
-          "description": "License filename."
+          "description": "License filename used unless one is defined by its usage conventions."
         },
         "license.token": {
           "type": "string",

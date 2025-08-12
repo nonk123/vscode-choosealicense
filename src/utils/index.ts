@@ -1,3 +1,11 @@
+const filenameOverrides = new Map<string, string>([
+  ["unlicense", "UNLICENSE"],
+]);
+
+export function getConventionalFilename(licenseKey: string): string | undefined {
+  return filenameOverrides.get(licenseKey);
+};
+
 export const replaceAuthor = (author: string, key: string, text: string) => {
   switch (key) {
     case "agpl-3.0":

@@ -11,7 +11,7 @@ import {
   setTokenProperty,
 } from "../config";
 import { getLicenses, getLicense } from "../api";
-import { replaceAuthor, replaceYear } from "../utils";
+import { replaceAuthor, replaceYear, getConventionalFilename } from "../utils";
 import { LicenseItem, License } from "../types";
 
 /**
@@ -76,17 +76,17 @@ const licenseToQuickPickItem = (
 ): QuickPickLicenseItem => {
   return l.key === defaultKey
     ? {
-        label: l.spdx_id ? l.spdx_id : l.key,
-        detail: l.name,
-        description: "Default",
-        key: l.key,
-        alwaysShow: true,
-      }
+      label: l.spdx_id ? l.spdx_id : l.key,
+      detail: l.name,
+      description: "Default",
+      key: l.key,
+      alwaysShow: true,
+    }
     : {
-        label: l.spdx_id ? l.spdx_id : l.key,
-        detail: l.name,
-        key: l.key,
-      };
+      label: l.spdx_id ? l.spdx_id : l.key,
+      detail: l.name,
+      key: l.key,
+    };
 };
 
 const showLicenses = async (
@@ -254,13 +254,12 @@ const addLicense = async (license: License, multiple: boolean) => {
       vscode.workspace.getConfiguration("license").get("extension") ?? "";
 
     const filename: string =
-      vscode.workspace.getConfiguration("license").get("filename") ?? "LICENSE";
+      getConventionalFilename(license.key) ?? vscode.workspace.getConfiguration("license").get("filename") ?? "LICENSE";
 
     const content = new TextEncoder().encode(text);
 
     const licensePath = vscode.Uri.file(
-      `${folder.uri.fsPath}/${filename}${
-        multiple ? `-${license.spdx_id?.toUpperCase()}` : ""
+      `${folder.uri.fsPath}/${filename}${multiple ? `-${license.spdx_id?.toUpperCase()}` : ""
       }${extension}`
     );
 
