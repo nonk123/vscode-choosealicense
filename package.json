@@ -131,7 +131,12 @@
         "license.filename": {
           "type": "string",
           "default": "LICENSE",
-          "description": "License filename used unless one is defined by its usage conventions."
+          "description": "License filename used unless overridden by conventional name."
+        },
+        "license.useConventionalFilename": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to use license filenames defined by convention over the default."
         },
         "license.token": {
           "type": "string",

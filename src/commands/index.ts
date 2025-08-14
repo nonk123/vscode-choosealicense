@@ -11,7 +11,7 @@ import {
   setTokenProperty,
 } from "../config";
 import { getLicenses, getLicense } from "../api";
-import { replaceAuthor, replaceYear, getConventionalFilename } from "../utils";
+import { replaceAuthor, replaceYear } from "../utils";
 import { LicenseItem, License } from "../types";
 
 /**
@@ -60,6 +60,10 @@ export const uncommonLicenses: LicenseItem[] = [
     html_url: "http://choosealicense.com/licenses/wtfpl/",
   },
 ];
+
+const conventionalFilenames = new Map<string, string>([
+  ["unlicense", "UNLICENSE"],
+]);
 
 interface QuickPickLicenseItem {
   label: string;
@@ -253,8 +257,13 @@ const addLicense = async (license: License, multiple: boolean) => {
     const extension: string =
       vscode.workspace.getConfiguration("license").get("extension") ?? "";
 
-    const filename: string =
-      getConventionalFilename(license.key) ?? vscode.workspace.getConfiguration("license").get("filename") ?? "LICENSE";
+    const filename: string = (function () {
+      let value: string | undefined = undefined;
+      if (Boolean(vscode.workspace.getConfiguration("license").get("useConventionalFilename")))
+        value ??= conventionalFilenames.get(license.key);
+      value ??= vscode.workspace.getConfiguration("license").get("filename");
+      return value ?? "LICENSE";
+    })();
 
     const content = new TextEncoder().encode(text);
 
